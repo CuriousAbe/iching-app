@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#111827"/>
+  <title>易经算卦</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root{--bg:#0b1020;--card:#121a2e;--text:#e5e7eb;--muted:#9ca3af;--line:#334155;--pri:#10b981;--warn:#f59e0b}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(1000px 700px at 50% -20%,#1f2937,var(--bg));color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,"PingFang SC",sans-serif}
+    .wrap{max-width:860px;margin:0 auto;padding:16px}
+    .card{background:color-mix(in oklab,var(--card) 92%,black);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+    h1{margin:0 0 10px;font-size:22px} h2{margin:0 0 8px;font-size:18px}
+    input,textarea,button{font:inherit}
+    textarea{width:100%;min-height:76px;border-radius:10px;border:1px solid var(--line);background:#0b1220;color:var(--text);padding:10px}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    button{border:1px solid var(--line);background:#0b1220;color:var(--text);border-radius:10px;padding:9px 12px;cursor:pointer}
+    button.primary{border-color:#059669;background:#064e3b}
+    button.warn{border-color:#b45309;background:#78350f}
+    .muted{color:var(--muted);font-size:13px}
+    .yao{display:grid;gap:6px;margin:10px 0}
+    .line{height:14px;position:relative}
+    .solid,.brokenL,.brokenR{position:absolute;top:0;height:14px;background:#e5e7eb;border-radius:999px}
+    .solid{left:0;right:0}.brokenL{left:0;width:42%}.brokenR{right:0;width:42%}
+    .changing::after{content:"变";position:absolute;right:-24px;top:-3px;font-size:12px;color:var(--warn)}
+    .grid2{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:760px){.grid2{grid-template-columns:1fr 1fr}}
+    .pill{display:inline-block;padding:3px 9px;border-radius:999px;border:1px solid var(--line);margin-right:6px;margin-bottom:6px;font-size:12px}
+    ul{margin:8px 0 0 18px;padding:0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>易经算卦</h1>
+      <div class="muted">长期版：本地保存历史、离线可用（可添加到手机主屏）。</div>
+    </div>
+
+    <div class="card">
+      <h2>1) 输入所问之事</h2>
+      <textarea id="question" placeholder="例如：这个月是否适合推进 X 项目？"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button id="genBtn" class="primary">一键起卦（六爻）</button>
+        <button id="clearBtn">清空输入</button>
+      </div>
+      <div class="muted" style="margin-top:8px">算法：三枚铜钱法（6/7/8/9），自动生成本卦与变卦。</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>2) 本卦</h2>
+        <div id="mainName" class="pill">-</div>
+        <div id="mainMeta" class="muted"></div>
+        <div id="mainYao" class="yao"></div>
+      </div>
+      <div class="card">
+        <h2>3) 变卦</h2>
+        <div id="chgName" class="pill">-</div>
+        <div id="chgMeta" class="muted"></div>
+        <div id="chgYao" class="yao"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>4) 解读建议</h2>
+      <div id="reading" class="muted">起卦后显示。</div>
+    </div>
+
+    <div class="card">
+      <h2>历史记录</h2>
+      <div class="row" style="margin-bottom:8px">
+        <button id="wipeHistory" class="warn">清空历史</button>
+      </div>
+      <ul id="history"></ul>
+    </div>
+  </div>
+
+<script>
+const TRIGRAMS = {
+  '111': {name:'乾', nature:'天'}, '110': {name:'兑', nature:'泽'}, '101': {name:'离', nature:'火'}, '100': {name:'震', nature:'雷'},
+  '011': {name:'巽', nature:'风'}, '010': {name:'坎', nature:'水'}, '001': {name:'艮', nature:'山'}, '000': {name:'坤', nature:'地'}
+};
+
+const HEXAGRAM_NAMES = {
+'111111':'乾为天','000000':'坤为地','010001':'水雷屯','100010':'山水蒙','010111':'水天需','111010':'天水讼','000010':'地水师','010000':'水地比',
+'110111':'风天小畜','111011':'天泽履','000111':'地天泰','111000':'天地否','111101':'天火同人','101111':'火天大有','000100':'地山谦','001000':'雷地豫',
+'011001':'泽雷随','100110':'山风蛊','000011':'地泽临','110000':'风地观','101001':'火雷噬嗑','100101':'山火贲','100000':'山地剥','000001':'地雷复',
+'111001':'天雷无妄','100111':'山天大畜','100001':'山雷颐','011110':'泽风大过','010010':'坎为水','101101':'离为火','011100':'泽山咸','001110':'雷风恒',
+'111100':'天山遁','001111':'雷天大壮','101000':'火地晋','000101':'地火明夷','110101':'风火家人','101011':'火泽睽','010100':'水山蹇','001010':'雷水解',
+'110001':'山泽损','100011':'风雷益','111110':'泽天夬','011111':'天风姤','110000':'泽地萃','000011':'地风升','010110':'泽水困','011010':'水风井',
+'110100':'泽火革','001011':'火风鼎','100100':'震为雷','001001':'艮为山','011011':'风山渐','110110':'雷泽归妹','101100':'雷火丰','001101':'火山旅',
+'011011':'巽为风','010010':'兑为泽','011010':'风水涣','010110':'水泽节','110011':'风泽中孚','001100':'雷山小过','101010':'水火既济','010101':'火水未济'
+};
+
+const KEYWORDS = {
+'乾为天':'刚健进取，先难后易。','坤为地':'厚德承载，以柔胜刚。','未济':'事未成，宜谨慎推进。','既济':'阶段完成，防盛极转衰。'
+};
+
+function tossThreeCoins(){
+  const c=()=>Math.random()<0.5?2:3; // 2阴3阳
+  return c()+c()+c();
+}
+
+function buildHex(){
+  const lines=[]; // from bottom to top
+  for(let i=0;i<6;i++){
+    const s=tossThreeCoins();
+    if(s===6) lines.push({yang:0,changing:true});
+    if(s===7) lines.push({yang:1,changing:false});
+    if(s===8) lines.push({yang:0,changing:false});
+    if(s===9) lines.push({yang:1,changing:true});
+  }
+  return lines;
+}
+
+function toBits(lines){ return lines.map(l=>l.yang?1:0).join(''); }
+function changed(lines){ return lines.map(l=>l.changing?{...l,yang:l.yang?0:1,changing:false}:l); }
+
+function trigramMeta(bits6){
+  const lower = bits6.slice(0,3), upper = bits6.slice(3,6);
+  const l = TRIGRAMS[lower], u = TRIGRAMS[upper];
+  return `上卦 ${u.name}(${u.nature}) · 下卦 ${l.name}(${l.nature})`;
+}
+
+function renderYao(el, lines){
+  el.innerHTML='';
+  [...lines].reverse().forEach(l=>{
+    const d=document.createElement('div');d.className='line'+(l.changing?' changing':'');
+    if(l.yang){ const s=document.createElement('div');s.className='solid';d.appendChild(s); }
+    else{ const a=document.createElement('div');a.className='brokenL';const b=document.createElement('div');b.className='brokenR';d.append(a,b); }
+    el.appendChild(d);
+  });
+}
+
+function now(){
+  const d=new Date();
+  const p=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function saveHistory(item){
+  const list=JSON.parse(localStorage.getItem('iching_history')||'[]');
+  list.unshift(item);
+  localStorage.setItem('iching_history', JSON.stringify(list.slice(0,200)));
+  renderHistory();
+}
+
+function renderHistory(){
+  const ul=document.getElementById('history');
+  const list=JSON.parse(localStorage.getItem('iching_history')||'[]');
+  ul.innerHTML='';
+  if(!list.length){ ul.innerHTML='<li class="muted">暂无记录</li>'; return; }
+  list.slice(0,30).forEach(x=>{
+    const li=document.createElement('li');
+    li.textContent=`[${x.time}] ${x.q||'（未填写问题）'} ｜ ${x.main} → ${x.chg}`;
+    ul.appendChild(li);
+  });
+}
+
+function doDivination(){
+  const q=document.getElementById('question').value.trim();
+  const mainLines=buildHex();
+  const chgLines=changed(mainLines);
+
+  const mBits=toBits(mainLines), cBits=toBits(chgLines);
+  const mName=HEXAGRAM_NAMES[mBits] || `卦象(${mBits})`;
+  const cName=HEXAGRAM_NAMES[cBits] || `卦象(${cBits})`;
+
+  document.getElementById('mainName').textContent=mName;
+  document.getElementById('chgName').textContent=cName;
+  document.getElementById('mainMeta').textContent=trigramMeta(mBits);
+  document.getElementById('chgMeta').textContent=trigramMeta(cBits);
+
+  renderYao(document.getElementById('mainYao'), mainLines);
+  renderYao(document.getElementById('chgYao'), chgLines);
+
+  const k1=KEYWORDS[mName] || '先观大势，再定节奏。';
+  const k2=KEYWORDS[cName] || '变卦提示后续走向与调整方向。';
+  const changing = mainLines.filter(x=>x.changing).length;
+  document.getElementById('reading').innerHTML = `
+    <div>本卦：<b>${mName}</b>。${k1}</div>
+    <div style="margin-top:6px">变卦：<b>${cName}</b>。${k2}</div>
+    <div style="margin-top:6px">动爻数：<b>${changing}</b>。建议：${changing<=1?'先稳后动，抓一个关键点。':changing<=3?'边做边校准，避免一次性押注。':'变化较大，先保底再扩张。'}</div>
+    <div class="muted" style="margin-top:8px">提示：算卦用于启发决策，不替代现实信息与专业判断。</div>
+  `;
+
+  saveHistory({time:now(), q, main:mName, chg:cName});
+}
+
+document.getElementById('genBtn').addEventListener('click', doDivination);
+document.getElementById('clearBtn').addEventListener('click', ()=>document.getElementById('question').value='');
+document.getElementById('wipeHistory').addEventListener('click', ()=>{
+  if(confirm('确定清空本地历史记录？')){ localStorage.removeItem('iching_history'); renderHistory(); }
+});
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+renderHistory();
+</script>
+</body>
+</html>
