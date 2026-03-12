@@ -1,0 +1,17 @@
+{
+  "_comment": "Supported providers: anthropic | openai | deepseek | groq | ollama | gemini",
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-6",
+  "apiKey": "YOUR_API_KEY_HERE",
+  "maxTokens": 1024,
+  "temperature": 0.7,
+  "baseUrl": null,
+
+  "_examples": {
+    "openai":   { "provider": "openai",   "model": "gpt-4o",                "baseUrl": null },
+    "deepseek": { "provider": "deepseek", "model": "deepseek-chat",          "baseUrl": null },
+    "groq":     { "provider": "groq",     "model": "llama-3.3-70b-versatile","baseUrl": null },
+    "ollama":   { "provider": "ollama",   "model": "llama3.2",               "baseUrl": "http://localhost:11434/v1", "apiKey": "ollama" },
+    "gemini":   { "provider": "gemini",   "model": "gemini-2.0-flash",       "baseUrl": null }
+  }
+}

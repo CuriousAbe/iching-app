@@ -4,177 +4,867 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0812" />
-  <title>易经算卦 · 仪式版</title>
+  <title>问卦 · I Ching</title>
   <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" />
   <style>
-    :root{
-      --bg:#0b0812;--bg2:#171022;--card:#140f1fcc;--line:#3a2e52;--text:#f7f1e8;--muted:#b9abc9;
-      --gold:#e5be78;--jade:#7de5c3;--rose:#d7a6ff;
+    :root {
+      --bg:    #0a0710;
+      --bg2:   #140f20;
+      --card:  #120d1ecc;
+      --line:  #2e2444;
+      --text:  #f0e8da;
+      --muted: #9080aa;
+      --gold:  #e5be78;
+      --gold2: #c9a24e;
+      --jade:  #6dd5b8;
+      --rose:  #c89fff;
+      --danger:#8b3a4a;
     }
-    *{box-sizing:border-box}
-    body{margin:0;color:var(--text);font-family:"Noto Serif SC","Songti SC",Georgia,serif;
-      background:radial-gradient(900px 600px at 50% -10%,#2e1b4a55,transparent 50%),
-      radial-gradient(1200px 700px at 10% 120%,#1c3b4d44,transparent 45%),
-      linear-gradient(160deg,var(--bg),var(--bg2));min-height:100svh}
-    .wrap{max-width:980px;margin:0 auto;padding:18px}
-    .hero,.card{border:1px solid var(--line);border-radius:16px;background:var(--card);backdrop-filter:blur(6px);box-shadow:0 10px 34px #0008,inset 0 1px 0 #ffffff14}
-    .hero{padding:18px;margin-bottom:12px;position:relative;overflow:hidden}
-    .hero:before{content:"";position:absolute;inset:-80% -20% auto;height:200px;background:radial-gradient(circle,#ffdca244,transparent 60%);animation:float 7s ease-in-out infinite}
-    @keyframes float{50%{transform:translateY(16px)}}
-    .title{font-size:28px;font-weight:700;letter-spacing:.08em;display:flex;align-items:center;gap:10px}
-    .seal{font-size:12px;padding:3px 10px;border:1px solid #6c5430;border-radius:999px;color:var(--gold);background:#3a2d1850}
-    .muted{color:var(--muted);font-size:13px;line-height:1.6}
-    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}
-    @media (max-width:860px){.grid{grid-template-columns:1fr}}
-    .card{padding:14px}
-    h2{margin:0 0 9px;font-size:18px;color:#f3e8d5}
-    textarea{width:100%;min-height:92px;background:#0b0a14;border:1px solid #46395d;color:var(--text);border-radius:12px;padding:11px;font-family:inherit}
-    .row{display:flex;gap:8px;flex-wrap:wrap}
-    button{border:1px solid #4e4166;background:#17122a;color:var(--text);border-radius:11px;padding:9px 14px;cursor:pointer;font-family:inherit}
-    button.primary{border-color:#7c5f33;background:linear-gradient(180deg,#4b3819,#2d2110);color:#f7e6c6}
-    button.warn{border-color:#6d3c4f;background:#2c1420}
-    button:disabled{opacity:.5;cursor:not-allowed}
-    .ritual{margin-top:9px;padding:10px 12px;border:1px dashed #594572;border-radius:10px;background:#1a1328a6}
-    .coinRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .coin{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid #8c6f3d;background:radial-gradient(circle at 30% 30%,#f7deab,#af7f2f);color:#452f0d;font-size:12px}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .hexWrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-    @media (max-width:680px){.hexWrap{grid-template-columns:1fr}}
-    .pill{display:inline-flex;padding:5px 10px;border:1px solid #70552c;border-radius:999px;color:var(--gold);background:#2c211150;font-size:12px;margin-bottom:7px}
-    .yao{display:grid;gap:8px;margin-top:10px;padding-right:24px}
-    .line{height:14px;position:relative}
-    .solid,.brokenL,.brokenR{position:absolute;top:0;height:14px;border-radius:999px;background:linear-gradient(180deg,#fff4e2,#edd7b5)}
-    .solid{left:0;right:0}.brokenL{left:0;width:42%}.brokenR{right:0;width:42%}
-    .changing::after{content:'动';position:absolute;right:-22px;top:-1px;color:var(--jade);font-size:12px;font-weight:700}
+    body {
+      color: var(--text);
+      font-family: "Noto Serif SC", "Songti SC", Georgia, serif;
+      background:
+        radial-gradient(ellipse 900px 500px at 60% -5%, #2e1b4a40, transparent 55%),
+        radial-gradient(ellipse 700px 600px at -5% 90%, #1a3a4a35, transparent 50%),
+        linear-gradient(160deg, var(--bg), var(--bg2));
+      min-height: 100svh;
+    }
 
-    .reading{line-height:1.8}
-    .reading b{color:#fff}
-    ul{margin:8px 0 0 18px;padding:0}
-    li{margin:6px 0}
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 16px; }
+
+    /* ── GLASS CARD ── */
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 40px #00000060, inset 0 1px 0 #ffffff12;
+      padding: 18px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 40px #00000060, inset 0 1px 0 #ffffff12;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -60% -10% auto;
+      height: 180px;
+      background: radial-gradient(circle, #ffd99a30, transparent 60%);
+      animation: floatGlow 8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes floatGlow { 50% { transform: translateY(20px) scale(1.1); } }
+
+    .hero-left { position: relative; }
+    .title { font-size: 26px; font-weight: 700; letter-spacing: .1em; display: flex; align-items: center; gap: 10px; }
+    .seal {
+      font-size: 11px; padding: 3px 9px;
+      border: 1px solid #6c5430; border-radius: 999px;
+      color: var(--gold); background: #3a2d1840;
+    }
+    .tagline { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+    .hero-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .model-badge {
+      font-size: 11px; color: var(--muted);
+      border: 1px solid var(--line); border-radius: 999px;
+      padding: 3px 10px; white-space: nowrap;
+    }
+    #langBtn {
+      font-size: 13px; font-weight: 700; letter-spacing: .06em;
+      border: 1px solid #5a4a70; border-radius: 999px;
+      background: #1e1730; color: var(--rose);
+      padding: 5px 14px; cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    #langBtn:hover { background: #2d2250; }
+
+    /* ── GRID ── */
+    .grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 12px; }
+    @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+
+    h2 { font-size: 16px; color: #ede0ce; margin-bottom: 10px; letter-spacing: .05em; }
+
+    /* ── TEXTAREA ── */
+    textarea {
+      width: 100%; min-height: 88px; resize: vertical;
+      background: #0a0814; border: 1px solid #3a2e55;
+      color: var(--text); border-radius: 12px; padding: 11px 13px;
+      font-family: inherit; font-size: 14px; line-height: 1.6;
+      transition: border-color .2s;
+    }
+    textarea:focus { outline: none; border-color: #7a6090; }
+
+    /* ── BUTTONS ── */
+    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    button {
+      border: 1px solid #4a3a68; background: #160f28;
+      color: var(--text); border-radius: 11px;
+      padding: 8px 14px; cursor: pointer;
+      font-family: inherit; font-size: 13px;
+      transition: opacity .15s, background .15s;
+    }
+    button:hover { opacity: .85; }
+    button:disabled { opacity: .35; cursor: not-allowed; }
+    button.primary {
+      border-color: #7c5f33;
+      background: linear-gradient(180deg, #4b3a1a, #2c1f0e);
+      color: #f7e8c6; font-weight: 700; letter-spacing: .04em;
+      padding: 9px 20px;
+    }
+    button.warn { border-color: var(--danger); background: #1e0f15; color: #d4869e; }
+    button.share-btn {
+      width: 100%; margin-top: 14px;
+      border-color: #3a5a48;
+      background: linear-gradient(180deg, #1a3328, #0f1e18);
+      color: var(--jade); font-weight: 700;
+      padding: 10px;
+    }
+
+    /* ── RITUAL BOX ── */
+    .ritual {
+      margin-top: 10px; padding: 12px 14px;
+      border: 1px dashed #4a3a60; border-radius: 12px;
+      background: #16102aaa;
+    }
+    .ritual-hint { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    #ritualText {
+      color: var(--muted); font-size: 13px; margin-top: 8px;
+      min-height: 18px; transition: color .3s;
+    }
+    #ritualText.active { color: var(--jade); }
+
+    /* ── COINS ── */
+    .coinRow { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; min-height: 36px; }
+    .coin {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: grid; place-items: center;
+      border: 1px solid #8c6f3d;
+      background: radial-gradient(circle at 35% 30%, #f7e0aa, #b07f2c);
+      color: #3a2008; font-size: 11px; font-weight: 700;
+      transform-style: preserve-3d;
+    }
+    .coin.flip { animation: coinFlip .45s ease-in-out; }
+    @keyframes coinFlip {
+      0%   { transform: rotateY(0deg);    opacity: 0; }
+      40%  { transform: rotateY(180deg);  opacity: .6; }
+      100% { transform: rotateY(360deg);  opacity: 1; }
+    }
+
+    /* ── READING CARD ── */
+    #reading { font-size: 14px; line-height: 1.85; min-height: 60px; }
+    .reading-placeholder { color: var(--muted); }
+    .reading-section { margin-bottom: 14px; }
+    .reading-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--gold2); border-left: 2px solid var(--gold2);
+      padding-left: 8px; margin-bottom: 5px;
+    }
+    .reading-text { color: #ddd0be; line-height: 1.85; }
+    .reading-text.transition { color: var(--jade); }
+    .reading-disclaimer { font-size: 12px; color: var(--muted); margin-top: 10px; border-top: 1px solid var(--line); padding-top: 10px; }
+
+    /* ── AI SPINNER ── */
+    .ai-thinking {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--muted); font-size: 13px; padding: 8px 0;
+    }
+    .spinner {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid #2e2444; border-top-color: var(--gold);
+      animation: spin .75s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── HEXAGRAM SECTION ── */
+    .hex-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 600px) { .hex-wrap { grid-template-columns: 1fr; } }
+
+    .hex-col h2 { display: flex; align-items: center; gap: 8px; }
+    .hex-badge {
+      display: inline-flex; padding: 4px 11px;
+      border: 1px solid #70552c; border-radius: 999px;
+      color: var(--gold); background: #2c211140;
+      font-size: 13px; margin-bottom: 6px;
+    }
+    .hex-meta { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+
+    /* ── YAO LINES ── */
+    .yao { display: grid; gap: 9px; padding-right: 28px; }
+    .yao-line {
+      height: 12px; position: relative;
+      opacity: 0; transform: scaleX(.6);
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .yao-line.shown { opacity: 1; transform: scaleX(1); }
+
+    .solid, .brokenL, .brokenR {
+      position: absolute; top: 0; height: 12px; border-radius: 999px;
+      background: linear-gradient(180deg, #fff6e0, #ddb96a);
+      box-shadow: 0 0 6px #e5be7840;
+    }
+    .solid  { left: 0; right: 0; }
+    .brokenL{ left: 0; width: 43%; }
+    .brokenR{ right: 0; width: 43%; }
+    .changing::after {
+      content: '动'; position: absolute; right: -24px; top: -2px;
+      color: var(--jade); font-size: 11px; font-weight: 700;
+    }
+
+    /* ── HISTORY ── */
+    #history { list-style: none; }
+    #history li { font-size: 12px; color: var(--muted); padding: 5px 0; border-bottom: 1px solid var(--line); line-height: 1.5; }
+    #history li:last-child { border-bottom: none; }
+    .hist-empty { font-style: italic; }
+
+    /* ── SECTION SPACING ── */
+    .section-gap { margin-top: 12px; }
+
+    /* ── SHARE CANVAS (hidden) ── */
+    #shareCanvas { display: none; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <div class="title">☯ 易经算卦 <span class="seal">仪式感版本</span></div>
-      <div class="muted" style="margin-top:6px">静心 · 立问 · 起卦 · 观变。可离线使用，历史自动保存。</div>
-    </section>
+<div class="wrap">
 
-    <section class="grid">
-      <div class="card">
-        <h2>立问</h2>
-        <textarea id="question" aria-label="占卜问题输入" placeholder="请写下你真正想问的一个问题…"></textarea>
-        <div class="ritual">
-          <div class="muted">先深呼吸一次，再点击「起卦」。系统将模拟六次铜钱掷卦。</div>
-          <div class="row" style="margin-top:8px">
-            <button id="genBtn" class="primary" aria-label="开始起卦">开始起卦</button>
-            <button id="clearBtn" aria-label="清空问题输入">清空</button>
-            <button id="wipeHistory" class="warn" aria-label="清空历史记录">清空历史</button>
-          </div>
-          <div id="ritualText" class="muted" style="margin-top:8px" role="status" aria-live="polite">尚未起卦</div>
-          <div id="coinRow" class="coinRow"></div>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-left">
+      <div class="title">☯ <span id="t-title">问卦</span> <span class="seal" id="t-seal">AI 解读版</span></div>
+      <div class="tagline" id="t-tagline">静心 · 立问 · 起卦 · 观变</div>
+    </div>
+    <div class="hero-right">
+      <div class="model-badge" id="modelBadge">加载中…</div>
+      <button id="langBtn">EN</button>
+    </div>
+  </header>
+
+  <!-- MAIN GRID -->
+  <section class="grid">
+    <!-- LEFT: Question -->
+    <div class="card">
+      <h2 id="t-ask">立问</h2>
+      <textarea id="question" aria-label="占卜问题" id="t-placeholder" placeholder="请写下你真正想问的一个问题…"></textarea>
+      <div class="ritual">
+        <div class="ritual-hint" id="t-ritual">先深呼吸一次，再点击「起卦」。系统将模拟六次铜钱掷卦。</div>
+        <div class="row">
+          <button id="genBtn"       class="primary" id="t-cast">开始起卦</button>
+          <button id="clearBtn"     id="t-clear">清空</button>
+          <button id="wipeHistory"  class="warn" id="t-wipeHistory">清空历史</button>
+        </div>
+        <div id="ritualText" role="status" aria-live="polite">尚未起卦</div>
+        <div id="coinRow" class="coinRow" aria-label="掷卦硬币结果"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Reading -->
+    <div class="card">
+      <h2 id="t-reading">解读</h2>
+      <div id="readingWrap">
+        <div id="reading"><span class="reading-placeholder" id="t-readingPlaceholder">起卦后显示。</span></div>
+        <div id="aiThinking" class="ai-thinking" hidden>
+          <div class="spinner"></div>
+          <span id="t-thinking">AI 解读中…</span>
         </div>
       </div>
+      <button id="shareBtn" class="share-btn" hidden>
+        <span id="t-share">📷 保存卦象卡片</span>
+      </button>
+    </div>
+  </section>
 
-      <div class="card">
-        <h2>解读</h2>
-        <div id="reading" class="reading muted" role="status" aria-live="polite">起卦后显示。</div>
+  <!-- HEXAGRAM DISPLAY -->
+  <section class="card section-gap" id="hexSection">
+    <div class="hex-wrap">
+      <div class="hex-col">
+        <h2 id="t-mainHex">本卦</h2>
+        <div id="mainName" class="hex-badge">—</div>
+        <div id="mainMeta" class="hex-meta"></div>
+        <div id="mainYao" class="yao"></div>
       </div>
-    </section>
-
-    <section class="card" style="margin-top:12px">
-      <div class="hexWrap">
-        <div>
-          <h2>本卦</h2>
-          <div id="mainName" class="pill">-</div>
-          <div id="mainMeta" class="muted"></div>
-          <div id="mainYao" class="yao"></div>
-        </div>
-        <div>
-          <h2>变卦</h2>
-          <div id="chgName" class="pill">-</div>
-          <div id="chgMeta" class="muted"></div>
-          <div id="chgYao" class="yao"></div>
-        </div>
+      <div class="hex-col">
+        <h2 id="t-chgHex">变卦</h2>
+        <div id="chgName" class="hex-badge">—</div>
+        <div id="chgMeta" class="hex-meta"></div>
+        <div id="chgYao" class="yao"></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="card" style="margin-top:12px">
-      <h2>历史记录</h2>
-      <ul id="history"></ul>
-    </section>
-  </div>
+  <!-- HISTORY -->
+  <section class="card section-gap">
+    <h2 id="t-history">历史记录</h2>
+    <ul id="history"></ul>
+  </section>
+
+</div><!-- /wrap -->
+
+<!-- Hidden canvas for share card export -->
+<canvas id="shareCanvas"></canvas>
 
 <script>
-const TRIGRAMS={'111':{name:'乾',nature:'天'},'110':{name:'兑',nature:'泽'},'101':{name:'离',nature:'火'},'100':{name:'震',nature:'雷'},'011':{name:'巽',nature:'风'},'010':{name:'坎',nature:'水'},'001':{name:'艮',nature:'山'},'000':{name:'坤',nature:'地'}};
-const HEXAGRAM_NAMES={
-'111111':'乾为天','000000':'坤为地','010001':'水雷屯','100010':'山水蒙','010111':'水天需','111010':'天水讼','000010':'地水师','010000':'水地比',
-'111011':'风天小畜','110111':'天泽履','000111':'地天泰','111000':'天地否','111101':'天火同人','101111':'火天大有','000100':'地山谦','001000':'雷地豫',
-'100110':'泽雷随','011001':'山风蛊','110000':'地泽临','000011':'风地观','101001':'火雷噬嗑','100101':'山火贲','100000':'山地剥','000001':'地雷复',
-'111001':'天雷无妄','100111':'山天大畜','100001':'山雷颐','011110':'泽风大过','010010':'坎为水','101101':'离为火','001110':'泽山咸','011100':'雷风恒',
-'001111':'天山遁','111100':'雷天大壮','000101':'火地晋','101000':'地火明夷','101011':'风火家人','110101':'火泽睽','010100':'水山蹇','001010':'雷水解',
-'110001':'山泽损','100011':'风雷益','111110':'泽天夬','011111':'天风姤','000110':'泽地萃','011000':'地风升','010110':'泽水困','011010':'水风井',
-'101110':'泽火革','011101':'火风鼎','100100':'震为雷','001001':'艮为山','001011':'风山渐','110100':'雷泽归妹','101100':'雷火丰','001101':'火山旅',
-'011011':'巽为风','110110':'兑为泽','010011':'风水涣','110010':'水泽节','110011':'风泽中孚','001100':'雷山小过','101010':'水火既济','010101':'火水未济'
+// ============================================================
+// DATA
+// ============================================================
+const TRIGRAMS = {
+  '111': { zh: '乾', en: 'Heaven',   nature_zh: '天', nature_en: 'Heaven'   },
+  '110': { zh: '兑', en: 'Lake',     nature_zh: '泽', nature_en: 'Lake'     },
+  '101': { zh: '离', en: 'Fire',     nature_zh: '火', nature_en: 'Fire'     },
+  '100': { zh: '震', en: 'Thunder',  nature_zh: '雷', nature_en: 'Thunder'  },
+  '011': { zh: '巽', en: 'Wind',     nature_zh: '风', nature_en: 'Wind'     },
+  '010': { zh: '坎', en: 'Water',    nature_zh: '水', nature_en: 'Water'    },
+  '001': { zh: '艮', en: 'Mountain', nature_zh: '山', nature_en: 'Mountain' },
+  '000': { zh: '坤', en: 'Earth',    nature_zh: '地', nature_en: 'Earth'    },
 };
 
-(function validateHexagramMap(){
-  const keys=Object.keys(HEXAGRAM_NAMES);
-  const unique=new Set(keys);
-  if(keys.length!==64||unique.size!==64){
-    console.warn('[iching] HEXAGRAM_NAMES 映射异常', {declared:keys.length, unique:unique.size});
-  }
-})();
+// [bits]: [zh name, en name]
+const HEX = {
+  '111111': ['乾为天','The Creative'],       '000000': ['坤为地','The Receptive'],
+  '010001': ['水雷屯','Difficulty at the Beginning'], '100010': ['山水蒙','Youthful Folly'],
+  '010111': ['水天需','Waiting'],             '111010': ['天水讼','Conflict'],
+  '000010': ['地水师','The Army'],            '010000': ['水地比','Union'],
+  '111011': ['风天小畜','Small Taming'],      '110111': ['天泽履','Treading'],
+  '000111': ['地天泰','Peace'],               '111000': ['天地否','Standstill'],
+  '111101': ['天火同人','Fellowship'],        '101111': ['火天大有','Great Possession'],
+  '000100': ['地山谦','Modesty'],             '001000': ['雷地豫','Enthusiasm'],
+  '100110': ['泽雷随','Following'],           '011001': ['山风蛊','Decay'],
+  '110000': ['地泽临','Approach'],            '000011': ['风地观','Contemplation'],
+  '101001': ['火雷噬嗑','Biting Through'],    '100101': ['山火贲','Grace'],
+  '100000': ['山地剥','Splitting Apart'],     '000001': ['地雷复','Return'],
+  '111001': ['天雷无妄','Innocence'],         '100111': ['山天大畜','Great Taming'],
+  '100001': ['山雷颐','Nourishment'],         '011110': ['泽风大过','Preponderance of the Great'],
+  '010010': ['坎为水','The Abysmal'],         '101101': ['离为火','The Clinging'],
+  '001110': ['泽山咸','Influence'],           '011100': ['雷风恒','Duration'],
+  '001111': ['天山遁','Retreat'],             '111100': ['雷天大壮','Great Power'],
+  '000101': ['火地晋','Progress'],            '101000': ['地火明夷','Darkening of the Light'],
+  '101011': ['风火家人','The Family'],        '110101': ['火泽睽','Opposition'],
+  '010100': ['水山蹇','Obstruction'],         '001010': ['雷水解','Deliverance'],
+  '110001': ['山泽损','Decrease'],            '100011': ['风雷益','Increase'],
+  '111110': ['泽天夬','Breakthrough'],        '011111': ['天风姤','Coming to Meet'],
+  '000110': ['泽地萃','Gathering Together'],  '011000': ['地风升','Pushing Upward'],
+  '010110': ['泽水困','Oppression'],          '011010': ['水风井','The Well'],
+  '101110': ['泽火革','Revolution'],          '011101': ['火风鼎','The Cauldron'],
+  '100100': ['震为雷','The Arousing'],        '001001': ['艮为山','Keeping Still'],
+  '001011': ['风山渐','Gradual Progress'],    '110100': ['雷泽归妹','The Marrying Maiden'],
+  '101100': ['雷火丰','Abundance'],           '001101': ['火山旅','The Wanderer'],
+  '011011': ['巽为风','The Gentle'],          '110110': ['兑为泽','The Joyous'],
+  '010011': ['风水涣','Dispersion'],          '110010': ['水泽节','Limitation'],
+  '110011': ['风泽中孚','Inner Truth'],       '001100': ['雷山小过','Small Preponderance'],
+  '101010': ['水火既济','After Completion'],  '010101': ['火水未济','Before Completion'],
+};
 
-const KEYWORDS={'乾为天':'宜果决，先立原则再行动。','坤为地':'宜包容，先承接再推进。','火地晋':'可主动争取，贵在正大光明。','地火明夷':'先守心志，暂避锋芒。','火水未济':'时机未满，先做准备。','水火既济':'局部已成，谨防松懈。'};
+// ============================================================
+// I18N
+// ============================================================
+const T = {
+  zh: {
+    title: '问卦', seal: 'AI 解读版',
+    tagline: '静心 · 立问 · 起卦 · 观变',
+    ask: '立问', reading: '解读', mainHex: '本卦', chgHex: '变卦', history: '历史记录',
+    placeholder: '请写下你真正想问的一个问题…',
+    ritual: '先深呼吸一次，再点击「起卦」。系统将模拟六次铜钱掷卦。',
+    cast: '开始起卦', clear: '清空', wipeHistory: '清空历史',
+    readingPlaceholder: '起卦后显示。',
+    thinking: 'AI 解读中…',
+    share: '📷 保存卦象卡片',
+    noHistory: '暂无记录',
+    confirmWipe: '确定清空本地历史记录？',
+    notYet: '尚未起卦',
+    calm: '焚香静心中…',
+    tossLine: i => `第 ${i} 爻：掷铜钱…`,
+    hexDone: '卦成，观其象。',
+    upper: '上卦', lower: '下卦', changing: '动爻',
+    labelOverview: '总势', labelAction: '行动', labelCaution: '警示', labelTransition: '变化',
+    disclaimer: '此应用用于启发思考，不替代专业决策。',
+    apiError: 'AI 解读暂时不可用，请稍后重试。',
+    noQuestion: '（未填写问题）',
+    modelLabel: '模型',
+    apiUnavail: '（离线模式，无 AI 解读）',
+  },
+  en: {
+    title: 'I Ching', seal: 'AI Reading',
+    tagline: 'Breathe · Ask · Cast · Observe',
+    ask: 'Your Question', reading: 'Reading', mainHex: 'Primary Hexagram', chgHex: 'Changed Hexagram', history: 'History',
+    placeholder: 'Write the one true question on your mind…',
+    ritual: 'Take one deep breath, then cast. Six coin tosses will be simulated.',
+    cast: 'Cast Hexagram', clear: 'Clear', wipeHistory: 'Clear History',
+    readingPlaceholder: 'Reading will appear here.',
+    thinking: 'AI interpreting…',
+    share: '📷 Save Reading Card',
+    noHistory: 'No history yet',
+    confirmWipe: 'Clear all local history?',
+    notYet: 'Not yet cast',
+    calm: 'Calming the mind…',
+    tossLine: i => `Line ${i}: tossing coins…`,
+    hexDone: 'Hexagram cast. Observe the pattern.',
+    upper: 'Upper', lower: 'Lower', changing: 'changing',
+    labelOverview: 'Overview', labelAction: 'Action', labelCaution: 'Caution', labelTransition: 'Transition',
+    disclaimer: 'For reflective use only, not professional advice.',
+    apiError: 'AI reading unavailable. Please try again.',
+    noQuestion: '(no question entered)',
+    modelLabel: 'Model',
+    apiUnavail: '(offline — no AI reading)',
+  },
+};
 
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const coinRow=document.getElementById('coinRow');
-const ritualText=document.getElementById('ritualText');
+// ============================================================
+// STATE
+// ============================================================
+let lang = localStorage.getItem('iching_lang') || 'zh';
+let apiAvailable = false;
+let lastResult = null; // { lines, mainBits, chgBits, mName, cName, question }
 
-function tossThreeCoins(){const c=()=>Math.random()<0.5?2:3;return [c(),c(),c()];}
-function scoreToLine(sum){if(sum===6)return {yang:0,changing:true};if(sum===7)return {yang:1,changing:false};if(sum===8)return {yang:0,changing:false};return {yang:1,changing:true};}
-const toBits=lines=>lines.map(l=>l.yang?1:0).join('');
-const changed=lines=>lines.map(l=>l.changing?{...l,yang:l.yang?0:1,changing:false}:l);
-function trigramMeta(bits6){const lower=bits6.slice(0,3),upper=bits6.slice(3,6);const l=TRIGRAMS[lower],u=TRIGRAMS[upper];return `上卦 ${u.name}(${u.nature}) · 下卦 ${l.name}(${l.nature})`;}
-function renderYao(el,lines){el.innerHTML='';[...lines].reverse().forEach(l=>{const d=document.createElement('div');d.className='line'+(l.changing?' changing':'');if(l.yang){const s=document.createElement('div');s.className='solid';d.appendChild(s)}else{const a=document.createElement('div');a.className='brokenL';const b=document.createElement('div');b.className='brokenR';d.append(a,b)}el.appendChild(d);});}
-function now(){const d=new Date();const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}
-function saveHistory(item){const list=JSON.parse(localStorage.getItem('iching_history')||'[]');list.unshift(item);localStorage.setItem('iching_history',JSON.stringify(list.slice(0,200)));renderHistory();}
-function renderHistory(){const ul=document.getElementById('history');const list=JSON.parse(localStorage.getItem('iching_history')||'[]');ul.innerHTML='';if(!list.length){ul.innerHTML='<li class="muted">暂无记录</li>';return;}list.slice(0,40).forEach(x=>{const li=document.createElement('li');li.textContent=`[${x.time}] ${x.q||'（未填写问题）'} ｜ ${x.main} → ${x.chg}`;ul.appendChild(li);});}
-
-async function doDivination(){
-  const btn=document.getElementById('genBtn'); btn.disabled=true;
-  const q=document.getElementById('question').value.trim();
-  const lines=[]; coinRow.innerHTML=''; ritualText.textContent='焚香静心中…';
-  await sleep(450);
-  for(let i=0;i<6;i++){
-    ritualText.textContent=`第 ${i+1} 爻：掷铜钱…`;
-    await sleep(280);
-    const coins=tossThreeCoins(); const sum=coins[0]+coins[1]+coins[2];
-    coins.forEach(v=>{const c=document.createElement('div');c.className='coin';c.textContent=v===3?'阳':'阴';coinRow.appendChild(c);});
-    lines.push(scoreToLine(sum));
-    await sleep(220);
-  }
-  ritualText.textContent='卦成，观其象。';
-
-  const mBits=toBits(lines), cBits=toBits(changed(lines));
-  const mName=HEXAGRAM_NAMES[mBits]||`卦象(${mBits})`; const cName=HEXAGRAM_NAMES[cBits]||`卦象(${cBits})`;
-  document.getElementById('mainName').textContent=mName; document.getElementById('chgName').textContent=cName;
-  document.getElementById('mainMeta').textContent=trigramMeta(mBits); document.getElementById('chgMeta').textContent=trigramMeta(cBits);
-  renderYao(document.getElementById('mainYao'),lines); renderYao(document.getElementById('chgYao'),changed(lines));
-
-  const k1=KEYWORDS[mName]||'先辨主次，再定步骤。';
-  const k2=KEYWORDS[cName]||'变卦提示后势，贵在因时调整。';
-  const changing=lines.filter(x=>x.changing).length;
-  document.getElementById('reading').innerHTML=`<div>本卦：<b>${mName}</b>。${k1}</div><div style='margin-top:6px'>变卦：<b>${cName}</b>。${k2}</div><div style='margin-top:6px'>动爻数：<b>${changing}</b>。${changing<=1?'当前主线清晰，稳步推进即可。':changing<=3?'局势有变，建议分阶段验证。':'变化较大，先求稳后求快。'}</div><div class='muted' style='margin-top:8px'>提示：此应用用于启发思考，不替代专业决策。</div>`;
-  saveHistory({time:now(),q,main:mName,chg:cName});
-  btn.disabled=false;
+// ============================================================
+// LANGUAGE
+// ============================================================
+function t(key, ...args) {
+  const val = T[lang][key];
+  return typeof val === 'function' ? val(...args) : val;
 }
 
-document.getElementById('genBtn').addEventListener('click',doDivination);
-document.getElementById('clearBtn').addEventListener('click',()=>document.getElementById('question').value='');
-document.getElementById('wipeHistory').addEventListener('click',()=>{if(confirm('确定清空本地历史记录？')){localStorage.removeItem('iching_history');renderHistory();}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}renderHistory();
+function hexName(bits) {
+  const pair = HEX[bits];
+  if (!pair) return bits;
+  return lang === 'zh' ? pair[0] : pair[1];
+}
+
+function trigramMeta(bits6) {
+  const lower = bits6.slice(0, 3), upper = bits6.slice(3, 6);
+  const l = TRIGRAMS[lower], u = TRIGRAMS[upper];
+  if (lang === 'zh') {
+    return `${t('upper')} ${u.zh}(${u.nature_zh}) · ${t('lower')} ${l.zh}(${l.nature_zh})`;
+  }
+  return `${t('upper')}: ${u.en} · ${t('lower')}: ${l.en}`;
+}
+
+function applyLang() {
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.getElementById('langBtn').textContent = lang === 'zh' ? 'EN' : '中';
+
+  const map = {
+    't-title':            'title',
+    't-seal':             'seal',
+    't-tagline':          'tagline',
+    't-ask':              'ask',
+    't-reading':          'reading',
+    't-mainHex':          'mainHex',
+    't-chgHex':           'chgHex',
+    't-history':          'history',
+    't-ritual':           'ritual',
+    't-readingPlaceholder': 'readingPlaceholder',
+    't-thinking':         'thinking',
+    't-share':            'share',
+  };
+  for (const [id, key] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t(key);
+  }
+
+  document.getElementById('question').placeholder = t('placeholder');
+  document.getElementById('genBtn').textContent   = t('cast');
+  document.getElementById('clearBtn').textContent = t('clear');
+  document.getElementById('wipeHistory').textContent = t('wipeHistory');
+
+  // Re-render dynamic parts if a result exists
+  if (lastResult) {
+    renderHexagramDisplay(lastResult.lines, lastResult.mainBits, lastResult.chgBits);
+    // Don't re-call API; re-display cached reading if present
+    const cached = lastResult.interpretation;
+    if (cached) renderReading(cached, lastResult.question);
+  }
+
+  renderHistory();
+  updateModelBadge();
+}
+
+function toggleLang() {
+  lang = lang === 'zh' ? 'en' : 'zh';
+  localStorage.setItem('iching_lang', lang);
+  applyLang();
+}
+
+// ============================================================
+// API AVAILABILITY CHECK
+// ============================================================
+async function checkAPI() {
+  try {
+    const r = await fetch('/api/info');
+    if (!r.ok) throw new Error();
+    const { provider, model } = await r.json();
+    apiAvailable = true;
+    document.getElementById('modelBadge').textContent = `${provider} · ${model}`;
+  } catch {
+    apiAvailable = false;
+    updateModelBadge();
+  }
+}
+
+function updateModelBadge() {
+  if (!apiAvailable) {
+    document.getElementById('modelBadge').textContent = t('apiUnavail');
+  }
+}
+
+// ============================================================
+// DIVINATION LOGIC
+// ============================================================
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function tossThreeCoins() {
+  const c = () => Math.random() < 0.5 ? 2 : 3;
+  return [c(), c(), c()];
+}
+function scoreToLine(sum) {
+  if (sum === 6) return { yang: 0, changing: true };
+  if (sum === 7) return { yang: 1, changing: false };
+  if (sum === 8) return { yang: 0, changing: false };
+  return { yang: 1, changing: true };
+}
+const toBits  = lines => lines.map(l => l.yang ? 1 : 0).join('');
+const changed = lines => lines.map(l => l.changing ? { ...l, yang: l.yang ? 0 : 1, changing: false } : l);
+
+// ============================================================
+// YAO RENDER
+// ============================================================
+function renderYao(el, lines, animate) {
+  el.innerHTML = '';
+  [...lines].reverse().forEach((l, i) => {
+    const d = document.createElement('div');
+    d.className = 'yao-line' + (l.changing ? ' changing' : '');
+    if (l.yang) {
+      const s = document.createElement('div'); s.className = 'solid'; d.appendChild(s);
+    } else {
+      const a = document.createElement('div'); a.className = 'brokenL';
+      const b = document.createElement('div'); b.className = 'brokenR';
+      d.append(a, b);
+    }
+    el.appendChild(d);
+    if (animate) {
+      setTimeout(() => d.classList.add('shown'), 80 + i * 90);
+    } else {
+      d.classList.add('shown');
+    }
+  });
+}
+
+// ============================================================
+// HEXAGRAM DISPLAY
+// ============================================================
+function renderHexagramDisplay(lines, mainBits, chgBits) {
+  document.getElementById('mainName').textContent = hexName(mainBits);
+  document.getElementById('chgName').textContent  = hexName(chgBits);
+  document.getElementById('mainMeta').textContent = trigramMeta(mainBits);
+  document.getElementById('chgMeta').textContent  = trigramMeta(chgBits);
+  renderYao(document.getElementById('mainYao'), lines, true);
+  renderYao(document.getElementById('chgYao'),  changed(lines), false);
+}
+
+// ============================================================
+// READING DISPLAY
+// ============================================================
+function renderReading(interp, question) {
+  const el = document.getElementById('reading');
+  const sections = [
+    { key: 'labelOverview',   field: 'overview',   cls: '' },
+    { key: 'labelAction',     field: 'action',     cls: '' },
+    { key: 'labelCaution',    field: 'caution',    cls: '' },
+    { key: 'labelTransition', field: 'transition', cls: ' transition' },
+  ];
+  let html = '';
+  for (const s of sections) {
+    if (!interp[s.field]) continue;
+    html += `<div class="reading-section">
+      <div class="reading-label">${t(s.key)}</div>
+      <div class="reading-text${s.cls}">${esc(interp[s.field])}</div>
+    </div>`;
+  }
+  html += `<div class="reading-disclaimer">${t('disclaimer')}</div>`;
+  el.innerHTML = html;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ============================================================
+// MAIN DIVINATION FLOW
+// ============================================================
+async function doDivination() {
+  const genBtn = document.getElementById('genBtn');
+  genBtn.disabled = true;
+  document.getElementById('shareBtn').hidden = true;
+  document.getElementById('reading').innerHTML = '';
+
+  const question = document.getElementById('question').value.trim();
+  const coinRow  = document.getElementById('coinRow');
+  const ritual   = document.getElementById('ritualText');
+
+  coinRow.innerHTML = '';
+  ritual.textContent = t('calm');
+  ritual.className = '';
+  await sleep(400);
+
+  const lines = [];
+  for (let i = 0; i < 6; i++) {
+    ritual.textContent = t('tossLine', i + 1);
+    ritual.className = 'active';
+    await sleep(260);
+    const coins = tossThreeCoins();
+    const sum   = coins[0] + coins[1] + coins[2];
+    coins.forEach(v => {
+      const c = document.createElement('div');
+      c.className = 'coin flip';
+      c.textContent = v === 3 ? '阳' : '阴';
+      coinRow.appendChild(c);
+    });
+    lines.push(scoreToLine(sum));
+    await sleep(200);
+  }
+
+  ritual.textContent = t('hexDone');
+  ritual.className = '';
+
+  const mainBits = toBits(lines);
+  const chgBits  = toBits(changed(lines));
+  const mName    = hexName(mainBits);
+  const cName    = hexName(chgBits);
+  const changingIdxs = lines.map((l, i) => l.changing ? i + 1 : null).filter(Boolean);
+
+  lastResult = { lines, mainBits, chgBits, mName, cName, question, interpretation: null };
+  renderHexagramDisplay(lines, mainBits, chgBits);
+
+  // --- AI reading ---
+  if (apiAvailable) {
+    document.getElementById('aiThinking').hidden = false;
+    try {
+      const resp = await fetch('/api/divine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question,
+          language: lang,
+          hexagram: {
+            name: mName, bits: mainBits,
+            upper: lang === 'zh' ? TRIGRAMS[mainBits.slice(3)].zh : TRIGRAMS[mainBits.slice(3)].en,
+            lower: lang === 'zh' ? TRIGRAMS[mainBits.slice(0,3)].zh : TRIGRAMS[mainBits.slice(0,3)].en,
+          },
+          changedHexagram: { name: cName, bits: chgBits },
+          changingLines: changingIdxs,
+        }),
+      });
+      const data = await resp.json();
+      document.getElementById('aiThinking').hidden = true;
+      if (data.ok) {
+        lastResult.interpretation = data.interpretation;
+        renderReading(data.interpretation, question);
+        document.getElementById('shareBtn').hidden = false;
+      } else {
+        document.getElementById('reading').innerHTML = `<span class="reading-placeholder">${t('apiError')}</span>`;
+      }
+    } catch {
+      document.getElementById('aiThinking').hidden = true;
+      document.getElementById('reading').innerHTML = `<span class="reading-placeholder">${t('apiError')}</span>`;
+    }
+  } else {
+    document.getElementById('reading').innerHTML = `<span class="reading-placeholder">${t('apiUnavail')}</span>`;
+  }
+
+  saveHistory({ time: now(), q: question || t('noQuestion'), main: mName, chg: cName });
+  genBtn.disabled = false;
+}
+
+// ============================================================
+// SHARE CARD (Canvas)
+// ============================================================
+function generateShareCard() {
+  if (!lastResult) return;
+  const { lines, mainBits, mName, question, interpretation } = lastResult;
+
+  const W = 800, H = 560;
+  const canvas = document.getElementById('shareCanvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0, '#0a0710');
+  grad.addColorStop(1, '#140f20');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle glow
+  const glow = ctx.createRadialGradient(W * .65, H * .15, 0, W * .65, H * .15, 300);
+  glow.addColorStop(0, '#2e1b4a28');
+  glow.addColorStop(1, 'transparent');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+
+  // Border
+  ctx.strokeStyle = '#2e244480';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(18, 18, W - 36, H - 36);
+
+  // App name
+  ctx.font = 'bold 15px "Noto Serif SC", serif';
+  ctx.fillStyle = '#9080aa';
+  ctx.fillText('☯  ' + (lang === 'zh' ? '问卦 · I Ching' : 'I Ching · 问卦'), 44, 58);
+
+  // Hexagram name
+  ctx.font = 'bold 48px "Noto Serif SC", serif';
+  ctx.fillStyle = '#e5be78';
+  ctx.fillText(mName, 44, 130);
+
+  // Draw hexagram lines (right side)
+  drawHexOnCanvas(ctx, lines, W - 160, 68, 100, 8, 14);
+
+  // Divider
+  ctx.strokeStyle = '#2e2444';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(44, 148); ctx.lineTo(W - 44, 148); ctx.stroke();
+
+  // Reading text
+  if (interpretation) {
+    const sections = [
+      { label: lang === 'zh' ? '总势' : 'Overview',   text: interpretation.overview },
+      { label: lang === 'zh' ? '行动' : 'Action',     text: interpretation.action },
+      { label: lang === 'zh' ? '警示' : 'Caution',    text: interpretation.caution },
+    ];
+    let y = 178;
+    for (const s of sections) {
+      if (!s.text) continue;
+      ctx.font = 'bold 12px "Noto Serif SC", serif';
+      ctx.fillStyle = '#c9a24e';
+      ctx.fillText(s.label.toUpperCase(), 44, y);
+      y += 20;
+      ctx.font = '14px "Noto Serif SC", serif';
+      ctx.fillStyle = '#d8c8b0';
+      y = wrapText(ctx, s.text, 44, y, W - 88, 22);
+      y += 14;
+    }
+  }
+
+  // Question at bottom
+  const qText = question ? `"${question}"` : '';
+  if (qText) {
+    ctx.font = 'italic 13px "Noto Serif SC", serif';
+    ctx.fillStyle = '#6a5880';
+    wrapText(ctx, qText, 44, H - 58, W - 88, 20);
+  }
+
+  // Date
+  ctx.font = '11px monospace';
+  ctx.fillStyle = '#4a3a60';
+  ctx.fillText(now(), 44, H - 34);
+
+  // Download
+  const a = document.createElement('a');
+  a.download = `iching-${mainBits}-${Date.now()}.png`;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+function drawHexOnCanvas(ctx, lines, x, y, w, lh, gap) {
+  [...lines].reverse().forEach((l, i) => {
+    const ly = y + i * (lh + gap) + lh / 2;
+    ctx.strokeStyle = l.changing ? '#6dd5b8' : '#e5be78';
+    ctx.lineWidth = lh;
+    ctx.lineCap = 'round';
+    if (l.yang) {
+      ctx.beginPath(); ctx.moveTo(x, ly); ctx.lineTo(x + w, ly); ctx.stroke();
+    } else {
+      const g = w * 0.14;
+      ctx.beginPath(); ctx.moveTo(x, ly); ctx.lineTo(x + (w - g) / 2, ly); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x + (w + g) / 2, ly); ctx.lineTo(x + w, ly); ctx.stroke();
+    }
+  });
+}
+
+function wrapText(ctx, text, x, y, maxW, lineH) {
+  const words = text.split('');
+  // For CJK: wrap by pixel width
+  let line = '';
+  for (const ch of text) {
+    const test = line + ch;
+    if (ctx.measureText(test).width > maxW && line.length > 0) {
+      ctx.fillText(line, x, y);
+      y += lineH;
+      line = ch;
+    } else {
+      line = test;
+    }
+  }
+  if (line) { ctx.fillText(line, x, y); y += lineH; }
+  return y;
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+function now() {
+  const d = new Date(), p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function saveHistory(item) {
+  const list = JSON.parse(localStorage.getItem('iching_history') || '[]');
+  list.unshift(item);
+  localStorage.setItem('iching_history', JSON.stringify(list.slice(0, 200)));
+  renderHistory();
+}
+function renderHistory() {
+  const ul = document.getElementById('history');
+  const list = JSON.parse(localStorage.getItem('iching_history') || '[]');
+  ul.innerHTML = '';
+  if (!list.length) {
+    ul.innerHTML = `<li class="muted hist-empty">${t('noHistory')}</li>`;
+    return;
+  }
+  list.slice(0, 40).forEach(x => {
+    const li = document.createElement('li');
+    li.textContent = `[${x.time}]  ${x.q}  ｜  ${x.main} → ${x.chg}`;
+    ul.appendChild(li);
+  });
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+document.getElementById('genBtn').addEventListener('click', doDivination);
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('question').value = '';
+});
+document.getElementById('wipeHistory').addEventListener('click', () => {
+  if (confirm(t('confirmWipe'))) {
+    localStorage.removeItem('iching_history');
+    renderHistory();
+  }
+});
+document.getElementById('langBtn').addEventListener('click', toggleLang);
+document.getElementById('shareBtn').addEventListener('click', generateShareCard);
+
+(async () => {
+  applyLang();
+  await checkAPI();
+  applyLang(); // refresh model badge after API check
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+})();
 </script>
 </body>
 </html>

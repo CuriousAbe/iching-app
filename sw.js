@@ -23,6 +23,8 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   const req = e.request;
+  // Never intercept API calls — let them go straight to the network
+  if (new URL(req.url).pathname.startsWith('/api/')) return;
   if (req.method !== 'GET') return;
 
   const isHtml = req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html');
